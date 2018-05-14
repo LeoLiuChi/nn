@@ -14,4 +14,8 @@ weights/*.json
 data/
 
 # ignore executables
-mlp_train
+mlp-train
+mlp-classify
+
+scripts/
+projects/

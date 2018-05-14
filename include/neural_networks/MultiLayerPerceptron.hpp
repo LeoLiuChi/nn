@@ -2,13 +2,19 @@
 #define _MULTI_LAYER_PERCEPTRON_HPP_
 
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <vector>
 #include <random>
 #include <iomanip>
 #include <Eigen/Dense>
 
+#include "../json.hpp"
+
 using namespace std;
 using Eigen::MatrixXd;
+
+using json = nlohmann::json;
 
 enum ACTIVATION {
   A_TANH,
@@ -37,6 +43,46 @@ public:
 
   Config config;
   vector<MatrixXd> weights;
+  vector<MatrixXd> bufferWeights;
+  vector<MatrixXd> deltaWeights;
+  vector<MatrixXd> layers;
+  vector<MatrixXd> gradients;
+
+  MatrixXd target;
+  MatrixXd errors;
+  MatrixXd eDerivatives;
+
+  double loss = 0.00;
+
+  /*
+   * CORE METHODS
+   */
+  void feedForward();
+  void backProp();
+  void activate(MatrixXd &m, ACTIVATION activation);
+  void calculateLoss(vector<double> target);
+  void loadWeights(string filename);
+  void saveWeights(string filename);
+
+  void setInput(vector<double> input) {
+    MatrixXd buff(input.size(), 1);
+
+    for(int i = 0; i < input.size(); i++) {
+      buff(i, 0) = input.at(i);
+    }
+
+    this->layers[0] = buff;
+  };
+
+  void setTarget(vector<double> t) {
+    MatrixXd buff(t.size(), 1);
+
+    for(int i = 0; i < t.size(); i++) {
+      buff(0, i) = t.at(i);
+    }
+
+    target  = buff;
+  };
 
   MultiLayerPerceptron(Config config) {
     this->config  = config;
@@ -87,7 +133,9 @@ public:
 
 private:
   void setup();
-  void initWeights(double min = -1.0, double max = 1.0);
+  MatrixXd derive(MatrixXd, ACTIVATION);
+  void initWeights(double min = -1.0, double max = 1.0, int seed = 1.0);
+  void initTopology();
 };
 
 #endif

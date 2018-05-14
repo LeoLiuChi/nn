@@ -40,7 +40,7 @@ Config build_config_from_json(json o) {
 
 void print_syntax() {
   cout << "Syntax:\n";
-  cout << "mlp_train [configFile] [trainingDataFile] [labelsDataFile] [savedWeightsFile]\n";
+  cout << "mlp_classify [configFile] [validationDataFile] [labelsDataFile] [savedWeightsFile]\n";
 }
 
 int main(int argc, char **argv) {
@@ -61,30 +61,33 @@ int main(int argc, char **argv) {
   printf("Neural network initiated...");
   mlp->printConfig();
 
-  printf("Loading data file from %s...\n", argv[2]);
-  vector< vector<double> > trainingData = utils::Misc::fetchData(argv[2]);
+  printf("Loading validation data from %s...\n", argv[2]);
+  vector< vector<double> > validationData = utils::Misc::fetchData(argv[2]);
 
-  printf("Loading labels file from %s...\n", argv[3]);
+  printf("Loading validation labels from %s...\n", argv[3]);
   vector< vector<double> > labelsData = utils::Misc::fetchData(argv[3]);
 
-  double err = 0.00;
+  printf("Loading weights from %s...\n", argv[4]);
+  mlp->loadWeights(argv[4]);
 
-  for(int i = 0; i < mlp->config.epoch; i++) {
-    double aveLoss  = 0.00;
-    for(int j = 0; j < trainingData.size(); j++) {
-      mlp->setInput(trainingData.at(j)); 
-      mlp->feedForward();
-      mlp->calculateLoss(labelsData.at(j));
-      mlp->backProp();
-      aveLoss += mlp->loss;
+  for(int i = 0; i < validationData.size(); i++) {
+    mlp->setInput(validationData.at(i)); 
+    mlp->feedForward();
+
+    printf("Output for datapoint %d:\n", i);
+    cout << mlp->layers.back() << endl;
+
+    MatrixXd target(1, labelsData.at(i).size());
+    for(int j = 0; j < labelsData.at(i).size(); j++) {
+      target(0, j) = labelsData.at(i).at(j);
     }
 
-    aveLoss = aveLoss / trainingData.size();
-    printf("Loss: %f\n", aveLoss);
-  }
+    printf("Target for datapoint %d:\n", i);
+    cout << target << endl;
 
-  printf("Saving weights to %s...\n", argv[4]);
-  mlp->saveWeights(argv[4]);
+    printf("======================\n");
+    //printf("%f\n", mlp->loss);
+  }
 
   printf("Done...\n");
 
