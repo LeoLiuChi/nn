@@ -41,3 +41,21 @@ add_executable(
 )
 
 target_link_libraries(mlp-classify Eigen3::Eigen)
+
+add_executable(
+  ae-train
+  src/ae_train.cpp
+  src/neural_networks/multi_layer_perceptron/setup.cpp
+  src/neural_networks/multi_layer_perceptron/init_weights.cpp
+  src/neural_networks/multi_layer_perceptron/init_topology.cpp
+  src/neural_networks/multi_layer_perceptron/feed_forward.cpp
+  src/neural_networks/multi_layer_perceptron/back_prop.cpp
+  src/neural_networks/multi_layer_perceptron/activate.cpp
+  src/neural_networks/multi_layer_perceptron/derive.cpp
+  src/neural_networks/multi_layer_perceptron/calculate_loss.cpp
+  src/neural_networks/multi_layer_perceptron/load_weights.cpp
+  src/neural_networks/multi_layer_perceptron/save_weights.cpp
+  src/utils/Misc.cpp
+)
+
+target_link_libraries(ae-train Eigen3::Eigen)

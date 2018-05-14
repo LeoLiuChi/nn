@@ -7,6 +7,7 @@
 #include <time.h>
 #include <Eigen/Dense>
 #include "../include/neural_networks/MultiLayerPerceptron.hpp"
+#include "../include/neural_networks/Autoencoder.hpp"
 #include "../include/json.hpp"
 #include "../include/utils/Misc.hpp"
 
@@ -40,11 +41,11 @@ Config build_config_from_json(json o) {
 
 void print_syntax() {
   cout << "Syntax:\n";
-  cout << "mlp-train [configFile] [trainingDataFile] [labelsDataFile] [savedWeightsFile]\n";
+  cout << "ae-train [configFile] [trainingDataFile] [savedWeightsFile]\n";
 }
 
 int main(int argc, char **argv) {
-  if(argc != 5) {
+  if(argc != 4) {
     print_syntax();
     exit(-1);
   }
@@ -65,7 +66,7 @@ int main(int argc, char **argv) {
   vector< vector<double> > trainingData = utils::Misc::fetchData(argv[2]);
 
   printf("Loading labels file from %s...\n", argv[3]);
-  vector< vector<double> > labelsData = utils::Misc::fetchData(argv[3]);
+  vector< vector<double> > labelsData = utils::Misc::fetchData(argv[2]);
 
   double err = 0.00;
 
@@ -83,8 +84,8 @@ int main(int argc, char **argv) {
     printf("Loss: %f\n", aveLoss);
   }
 
-  printf("Saving weights to %s...\n", argv[4]);
-  mlp->saveWeights(argv[4]);
+  printf("Saving weights to %s...\n", argv[3]);
+  mlp->saveWeights(argv[3]);
 
   printf("Done...\n");
 

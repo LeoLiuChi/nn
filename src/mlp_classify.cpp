@@ -40,7 +40,7 @@ Config build_config_from_json(json o) {
 
 void print_syntax() {
   cout << "Syntax:\n";
-  cout << "mlp_classify [configFile] [validationDataFile] [labelsDataFile] [savedWeightsFile]\n";
+  cout << "mlp-classify [configFile] [validationDataFile] [labelsDataFile] [savedWeightsFile]\n";
 }
 
 int main(int argc, char **argv) {

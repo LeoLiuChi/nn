@@ -16,6 +16,7 @@ data/
 # ignore executables
 mlp-train
 mlp-classify
+ae-train
 
 scripts/
 projects/

@@ -56,7 +56,7 @@ Saves a json weight array in file [weightFile.json]
 ./mlp-train [configFile.json] [trainingData.csv] [trainingLabels.json] [weightFile.json]
 ```
 
-### MLP Classification
+### MLP Classification (mlp-classify)
 
 Classifies validation data given set of labels given saved weightFile.json
 
