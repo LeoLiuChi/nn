@@ -2,26 +2,26 @@
 
 Neural Network based models written in C++, Eigen and OpenCV
 
-# Requirements
+## Requirements
 
 * CMake 3
 * Eigen3
 * OpenCV 3.x
 
-# Installation
+## Installation
 
 ```
 $ cmake .
 $ make
 ```
 
-# Components
+## Components
 
-## MLP: Multilayer Perceptron
+### MLP: Multilayer Perceptron
 
 A typical fully connected multilayer neural network
 
-### Config File
+#### Config File
 
 Json file with the following parameters:
 
@@ -38,17 +38,17 @@ Json file with the following parameters:
 }
 ```
 
-### Activation Values
+#### Activation Values
 
 * 0 - TANH
 * 1 - RELU
 * 2 - SIGMOID
 
-### Cost Values
+#### Cost Values
 
 * 0 - MSE (Least Squares Error)
 
-### MLP Training (mlp-train)
+#### MLP Training (mlp-train)
 
 Saves a json weight array in file [weightFile.json]
 
@@ -56,7 +56,7 @@ Saves a json weight array in file [weightFile.json]
 ./mlp-train [configFile.json] [trainingData.csv] [trainingLabels.json] [weightFile.json]
 ```
 
-### MLP Classification (mlp-classify)
+#### MLP Classification (mlp-classify)
 
 Classifies validation data given set of labels given saved weightFile.json
 
