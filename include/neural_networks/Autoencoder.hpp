@@ -17,8 +17,11 @@ using Eigen::MatrixXd;
 
 using json = nlohmann::json;
 
-class Autoencoder : MultiLayerPerceptron
+class Autoencoder : public MultiLayerPerceptron
 {
+public:
+  Autoencoder(Config config) : MultiLayerPerceptron(config) {
+  };
 };
 
 #endif
