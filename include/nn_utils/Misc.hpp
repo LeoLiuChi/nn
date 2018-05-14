@@ -9,7 +9,7 @@
 
 using namespace std;
 
-namespace utils
+namespace nn_utils
 {
   class Misc
   {

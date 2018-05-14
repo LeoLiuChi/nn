@@ -35,6 +35,7 @@ struct Config {
   ACTIVATION hActivation;
   ACTIVATION oActivation;
   COST cost;
+  vector<int> imageShape;
 };
 
 class MultiLayerPerceptron

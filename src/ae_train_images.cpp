@@ -7,17 +7,28 @@
 #include <time.h>
 #include <Eigen/Dense>
 #include "../include/neural_networks/MultiLayerPerceptron.hpp"
+#include "../include/neural_networks/Autoencoder.hpp"
 #include "../include/json.hpp"
-#include "../include/nn_utils/Misc.hpp"
+#include "../include/utils/Misc.hpp"
 
 using namespace std;
 using json = nlohmann::json;
 using Eigen::MatrixXf;
 
-Config build_config_from_json(json o) {
+Config build_ae_config_from_json(json o) {
   Config c;
 
-  vector<int> topology    = o["topology"];
+  // Symmetrical topology
+  vector<int> tempTopology  = o["topology"];
+  vector<int> topology;
+  for(int i = 0; i < tempTopology.size(); i++) {
+    topology.push_back(tempTopology.at(i));
+  }
+
+  for(int i = tempTopology.size() - 2; i >= 0; i--) {
+    topology.push_back(tempTopology.at(i));
+  }
+
   double bias             = o["bias"];
   double learningRate     = o["learningRate"];
   double momentum         = o["momentum"];
@@ -40,11 +51,11 @@ Config build_config_from_json(json o) {
 
 void print_syntax() {
   cout << "Syntax:\n";
-  cout << "mlp-train [configFile] [trainingDataFile] [labelsDataFile] [savedWeightsFile]\n";
+  cout << "ae-train [configFile] [trainingDataFile] [savedWeightsFile]\n";
 }
 
 int main(int argc, char **argv) {
-  if(argc != 5) {
+  if(argc != 4) {
     print_syntax();
     exit(-1);
   }
@@ -54,37 +65,38 @@ int main(int argc, char **argv) {
   string str((std::istreambuf_iterator<char>(configFile)),
               std::istreambuf_iterator<char>());
 
-  MultiLayerPerceptron *mlp = new MultiLayerPerceptron(
-                                build_config_from_json(json::parse(str))
-                              );
+
+  Autoencoder *ae = new Autoencoder(
+                      build_ae_config_from_json(json::parse(str))
+                    );
 
   printf("Neural network initiated...");
-  mlp->printConfig();
+  ae->printConfig();
 
   printf("Loading data file from %s...\n", argv[2]);
-  vector< vector<double> > trainingData = nn_utils::Misc::fetchData(argv[2]);
+  vector< vector<double> > trainingData = utils::Misc::fetchData(argv[2]);
 
   printf("Loading labels file from %s...\n", argv[3]);
-  vector< vector<double> > labelsData = nn_utils::Misc::fetchData(argv[3]);
+  vector< vector<double> > labelsData = utils::Misc::fetchData(argv[2]);
 
   double err = 0.00;
 
-  for(int i = 0; i < mlp->config.epoch; i++) {
+  for(int i = 0; i < ae->config.epoch; i++) {
     double aveLoss  = 0.00;
     for(int j = 0; j < trainingData.size(); j++) {
-      mlp->setInput(trainingData.at(j)); 
-      mlp->feedForward();
-      mlp->calculateLoss(labelsData.at(j));
-      mlp->backProp();
-      aveLoss += mlp->loss;
+      ae->setInput(trainingData.at(j)); 
+      ae->feedForward();
+      ae->calculateLoss(labelsData.at(j));
+      ae->backProp();
+      aveLoss += ae->loss;
     }
 
     aveLoss = aveLoss / trainingData.size();
     printf("Loss: %f\n", aveLoss);
   }
 
-  printf("Saving weights to %s...\n", argv[4]);
-  mlp->saveWeights(argv[4]);
+  printf("Saving weights to %s...\n", argv[3]);
+  ae->saveWeights(argv[3]);
 
   printf("Done...\n");
 

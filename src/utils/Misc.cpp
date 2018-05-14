@@ -1,6 +1,6 @@
-#include "../../include/utils/Misc.hpp"
+#include "../../include/nn_utils/Misc.hpp"
 
-vector< vector<double> > utils::Misc::fetchData(string path) {
+vector< vector<double> > nn_utils::Misc::fetchData(string path) {
   vector< vector<double> > data;
 
   ifstream infile(path);

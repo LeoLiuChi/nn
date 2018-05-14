@@ -8,7 +8,7 @@
 #include <Eigen/Dense>
 #include "../include/neural_networks/MultiLayerPerceptron.hpp"
 #include "../include/json.hpp"
-#include "../include/utils/Misc.hpp"
+#include "../include/nn_utils/Misc.hpp"
 
 using namespace std;
 using json = nlohmann::json;
@@ -62,10 +62,10 @@ int main(int argc, char **argv) {
   mlp->printConfig();
 
   printf("Loading validation data from %s...\n", argv[2]);
-  vector< vector<double> > validationData = utils::Misc::fetchData(argv[2]);
+  vector< vector<double> > validationData = nn_utils::Misc::fetchData(argv[2]);
 
   printf("Loading validation labels from %s...\n", argv[3]);
-  vector< vector<double> > labelsData = utils::Misc::fetchData(argv[3]);
+  vector< vector<double> > labelsData = nn_utils::Misc::fetchData(argv[3]);
 
   printf("Loading weights from %s...\n", argv[4]);
   mlp->loadWeights(argv[4]);

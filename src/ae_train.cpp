@@ -9,10 +9,10 @@
 #include "../include/neural_networks/MultiLayerPerceptron.hpp"
 #include "../include/neural_networks/Autoencoder.hpp"
 #include "../include/json.hpp"
-#include "../include/utils/Misc.hpp"
+#include "../include/nn_utils/Misc.hpp"
 
 using namespace std;
-using json = nlohmann::json;
+using json  = nlohmann::json;
 using Eigen::MatrixXf;
 
 Config build_ae_config_from_json(json o) {
@@ -74,14 +74,11 @@ int main(int argc, char **argv) {
   ae->printConfig();
 
   printf("Loading data file from %s...\n", argv[2]);
-  vector< vector<double> > trainingData = utils::Misc::fetchData(argv[2]);
+  vector< vector<double> > trainingData = nn_utils::Misc::fetchData(argv[2]);
 
   printf("Loading labels file from %s...\n", argv[3]);
-  vector< vector<double> > labelsData = utils::Misc::fetchData(argv[2]);
+  vector< vector<double> > labelsData = nn_utils::Misc::fetchData(argv[2]);
 
-  ae->printConfig();
-
-  /*
   double err = 0.00;
 
   for(int i = 0; i < ae->config.epoch; i++) {
@@ -102,7 +99,6 @@ int main(int argc, char **argv) {
   ae->saveWeights(argv[3]);
 
   printf("Done...\n");
-  */
 
   return 0;
 }

@@ -4,7 +4,8 @@ project(nn)
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -pthread -std=c++14")
 
-find_package (Eigen3 3.3 REQUIRED NO_MODULE)
+find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+find_package(OpenCV REQUIRED)
 
 add_executable(
   mlp-train
@@ -58,4 +59,4 @@ add_executable(
   src/utils/Misc.cpp
 )
 
-target_link_libraries(ae-train Eigen3::Eigen)
+target_link_libraries(ae-train Eigen3::Eigen ${OpenCV_LIBS})
