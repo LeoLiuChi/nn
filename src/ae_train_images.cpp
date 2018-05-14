@@ -9,11 +9,12 @@
 #include "../include/neural_networks/MultiLayerPerceptron.hpp"
 #include "../include/neural_networks/Autoencoder.hpp"
 #include "../include/json.hpp"
-#include "../include/utils/Misc.hpp"
+#include "../include/nn_utils/Misc.hpp"
 
 using namespace std;
-using json = nlohmann::json;
+using json  = nlohmann::json;
 using Eigen::MatrixXf;
+using Eigen::Map;
 
 Config build_ae_config_from_json(json o) {
   Config c;
@@ -36,6 +37,7 @@ Config build_ae_config_from_json(json o) {
   ACTIVATION hActivation  = o["hActivation"];
   ACTIVATION oActivation  = o["oActivation"];
   COST cost               = o["cost"];
+  vector<int> imageShape  = o["imageShape"];
 
   c.topology      = topology;
   c.bias          = bias;
@@ -45,13 +47,14 @@ Config build_ae_config_from_json(json o) {
   c.hActivation   = hActivation;
   c.oActivation   = oActivation;
   c.cost          = cost;
+  c.imageShape    = imageShape;
 
   return c;
 };
 
 void print_syntax() {
   cout << "Syntax:\n";
-  cout << "ae-train [configFile] [trainingDataFile] [savedWeightsFile]\n";
+  cout << "ae-train-images [configFile] [trainingDataFile] [savedWeightsFile]\n";
 }
 
 int main(int argc, char **argv) {
@@ -74,10 +77,10 @@ int main(int argc, char **argv) {
   ae->printConfig();
 
   printf("Loading data file from %s...\n", argv[2]);
-  vector< vector<double> > trainingData = utils::Misc::fetchData(argv[2]);
+  vector< vector<double> > trainingData = nn_utils::Misc::fetchData(argv[2]);
 
   printf("Loading labels file from %s...\n", argv[3]);
-  vector< vector<double> > labelsData = utils::Misc::fetchData(argv[2]);
+  vector< vector<double> > labelsData = nn_utils::Misc::fetchData(argv[2]);
 
   double err = 0.00;
 
@@ -89,10 +92,14 @@ int main(int argc, char **argv) {
       ae->calculateLoss(labelsData.at(j));
       ae->backProp();
       aveLoss += ae->loss;
+
+      Map<MatrixXd> m2(ae->layers.back().data(), ae->imageShape[0], ae->imageShape[1]);
+      cout << m2 << endl;
+      cout << "==================" << endl;
     }
 
     aveLoss = aveLoss / trainingData.size();
-    printf("Loss: %f\n", aveLoss);
+    printf("Epoch %d, Loss: %f\n", i, aveLoss);
   }
 
   printf("Saving weights to %s...\n", argv[3]);

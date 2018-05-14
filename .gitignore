@@ -17,6 +17,7 @@ data/
 mlp-train
 mlp-classify
 ae-train
+ae-train-images
 
 scripts/
 projects/

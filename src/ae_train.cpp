@@ -92,7 +92,7 @@ int main(int argc, char **argv) {
     }
 
     aveLoss = aveLoss / trainingData.size();
-    printf("Loss: %f\n", aveLoss);
+    printf("Epoch %d, Loss: %f\n", i, aveLoss);
   }
 
   printf("Saving weights to %s...\n", argv[3]);

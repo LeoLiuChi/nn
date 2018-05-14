@@ -1,12 +1,11 @@
 # NN
 
-Neural Network based models written in C++, Eigen and OpenCV
+Neural Network based models written in C++ and Eigen library
 
 ## Requirements
 
 * CMake 3
 * Eigen3
-* OpenCV 3.x
 
 ## Installation
 

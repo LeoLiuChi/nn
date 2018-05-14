@@ -12,7 +12,8 @@ vector< vector<double> > nn_utils::Misc::fetchData(string path) {
     stringstream    ss(line);
 
     while(getline(ss, tok, ',')) {
-      dRow.push_back(stof(tok));
+      double s = stod(tok);
+      dRow.push_back(stod(tok));
     }
 
     data.push_back(dRow);
