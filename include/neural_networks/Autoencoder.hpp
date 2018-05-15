@@ -25,8 +25,6 @@ public:
     }
   };
 
-  MatrixXd vectorToImage(MatrixXd m);
-  MatrixXd vectorToImage(vector<double> v);
   vector<int> imageShape;
 
 private:

@@ -93,9 +93,20 @@ int main(int argc, char **argv) {
       ae->backProp();
       aveLoss += ae->loss;
 
-      Map<MatrixXd> m2(ae->layers.back().data(), ae->imageShape[0], ae->imageShape[1]);
-      cout << m2 << endl;
-      cout << "==================" << endl;
+
+      Map<MatrixXd> inputImage(ae->layers.front().data(), ae->imageShape[0], ae->imageShape[1]);
+      Map<MatrixXd> reconstructedImage(ae->layers.back().data(), ae->imageShape[0], ae->imageShape[1]);
+
+      MatrixXd pixelMapInputImage         = inputImage * 255;
+      MatrixXd pixelMapReconstructedImage = reconstructedImage * 255;
+
+      cout << "Input:" << endl;
+      cout << pixelMapInputImage << endl;
+
+      cout << "Reconstruction:" << endl;
+      cout << pixelMapReconstructedImage << endl;
+
+      cout << "===================" << endl;
     }
 
     aveLoss = aveLoss / trainingData.size();

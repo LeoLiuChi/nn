@@ -73,7 +73,6 @@ add_executable(
   src/neural_networks/multi_layer_perceptron/calculate_loss.cpp
   src/neural_networks/multi_layer_perceptron/load_weights.cpp
   src/neural_networks/multi_layer_perceptron/save_weights.cpp
-  src/neural_networks/autoencoder/vector_to_image.cpp
   src/utils/Misc.cpp
 )
 
