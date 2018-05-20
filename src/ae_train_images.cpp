@@ -11,10 +11,14 @@
 #include "../include/json.hpp"
 #include "../include/nn_utils/Misc.hpp"
 
+#include <opencv2/opencv.hpp>
+#include <opencv2/core/eigen.hpp>
+
 using namespace std;
 using json  = nlohmann::json;
 using Eigen::MatrixXf;
 using Eigen::Map;
+using namespace cv;
 
 Config build_ae_config_from_json(json o) {
   Config c;
@@ -84,6 +88,7 @@ int main(int argc, char **argv) {
 
   double err = 0.00;
 
+  cv::Mat_<float> someImage = Mat_<float>::ones(ae->imageShape[0], ae->imageShape[1]);
   for(int i = 0; i < ae->config.epoch; i++) {
     double aveLoss  = 0.00;
     for(int j = 0; j < trainingData.size(); j++) {
@@ -97,14 +102,22 @@ int main(int argc, char **argv) {
       Map<MatrixXd> inputImage(ae->layers.front().data(), ae->imageShape[0], ae->imageShape[1]);
       Map<MatrixXd> reconstructedImage(ae->layers.back().data(), ae->imageShape[0], ae->imageShape[1]);
 
-      MatrixXd pixelMapInputImage         = inputImage * 255;
-      MatrixXd pixelMapReconstructedImage = reconstructedImage * 255;
+      MatrixXd pixelMapInputImage         = inputImage;
+      MatrixXd pixelMapReconstructedImage = reconstructedImage.transpose();
 
       cout << "Input:" << endl;
       cout << pixelMapInputImage << endl;
 
       cout << "Reconstruction:" << endl;
       cout << pixelMapReconstructedImage << endl;
+
+      cout << "Num channels: " << someImage.channels() << endl;
+      eigen2cv(pixelMapReconstructedImage, someImage);
+
+      cout << "OpenCV Mat:" << endl;
+      cout << someImage << endl;
+      imshow("test", someImage);
+      waitKey(1);
 
       cout << "===================" << endl;
     }

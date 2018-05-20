@@ -7,6 +7,11 @@ void MultiLayerPerceptron::backProp() {
       deltaWeights[i - 1] = gradients[i] * layers[i - 1].transpose();
     } else {
       gradients[i]  = (weights[i].transpose() * gradients[i + 1]).cwiseProduct(derive(layers[i], config.hActivation));
+
+      /**
+       *  Resize gradients to exclude bias in back prop
+       */
+      gradients[i].conservativeResize(gradients[i].rows() - 1, gradients[i].cols());
       deltaWeights[i - 1] = gradients[i] * layers[i - 1].transpose();
     }
 

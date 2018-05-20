@@ -44,7 +44,7 @@ public:
 
   Config config;
   vector<MatrixXd> weights;
-  vector<MatrixXd> bufferWeights;
+  vector<MatrixXd> biasWeights;
   vector<MatrixXd> deltaWeights;
   vector<MatrixXd> layers;
   vector<MatrixXd> gradients;
@@ -110,6 +110,11 @@ public:
     }
 
     cout << "\n";
+
+    cout << "Weights: ";
+    for(int i = 0; i < weights.size(); i++) {
+      cout << i << ": " << weights.at(i).rows() << "x" << weights.at(i).cols() << endl;
+    }
 
     cout << "Bias: " << config.bias << "\n";
     cout << "Learning Rate: " << config.learningRate << "\n";
