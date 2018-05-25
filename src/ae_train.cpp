@@ -76,7 +76,7 @@ int main(int argc, char **argv) {
   printf("Loading data file from %s...\n", argv[2]);
   vector< vector<double> > trainingData = nn_utils::Misc::fetchData(argv[2]);
 
-  printf("Loading labels file from %s...\n", argv[3]);
+  printf("Loading labels file from %s...\n", argv[2]);
   vector< vector<double> > labelsData = nn_utils::Misc::fetchData(argv[2]);
 
   double err = 0.00;

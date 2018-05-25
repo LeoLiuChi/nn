@@ -11,14 +11,9 @@
 #include "../include/json.hpp"
 #include "../include/nn_utils/Misc.hpp"
 
-#include <opencv2/opencv.hpp>
-#include <opencv2/core/eigen.hpp>
-
 using namespace std;
 using json  = nlohmann::json;
 using Eigen::MatrixXf;
-using Eigen::Map;
-using namespace cv;
 
 Config build_ae_config_from_json(json o) {
   Config c;
@@ -41,7 +36,6 @@ Config build_ae_config_from_json(json o) {
   ACTIVATION hActivation  = o["hActivation"];
   ACTIVATION oActivation  = o["oActivation"];
   COST cost               = o["cost"];
-  vector<int> imageShape  = o["imageShape"];
 
   c.topology      = topology;
   c.bias          = bias;
@@ -51,14 +45,13 @@ Config build_ae_config_from_json(json o) {
   c.hActivation   = hActivation;
   c.oActivation   = oActivation;
   c.cost          = cost;
-  c.imageShape    = imageShape;
 
   return c;
 };
 
 void print_syntax() {
   cout << "Syntax:\n";
-  cout << "ae-train-images [configFile] [trainingDataFile] [savedWeightsFile]\n";
+  cout << "ae-loss [configFile] [trainingDataFile] [savedWeightsFile]\n";
 }
 
 int main(int argc, char **argv) {
@@ -83,55 +76,19 @@ int main(int argc, char **argv) {
   printf("Loading data file from %s...\n", argv[2]);
   vector< vector<double> > trainingData = nn_utils::Misc::fetchData(argv[2]);
 
-  printf("Loading labels file from %s...\n", argv[3]);
+  printf("Loading labels file from %s...\n", argv[2]);
   vector< vector<double> > labelsData = nn_utils::Misc::fetchData(argv[2]);
 
-  double err = 0.00;
+  printf("Loading weights from %s...\n", argv[3]);
+  ae->loadWeights(argv[3]);
 
-  cv::Mat_<float> someImage = Mat_<float>::ones(ae->imageShape[0], ae->imageShape[1]);
-  for(int i = 0; i < ae->config.epoch; i++) {
-    double aveLoss  = 0.00;
-    for(int j = 0; j < trainingData.size(); j++) {
-      ae->setInput(trainingData.at(j)); 
-      ae->feedForward();
-      ae->calculateLoss(labelsData.at(j));
-      ae->backProp();
-      aveLoss += ae->loss;
-
-
-      Map<MatrixXd> inputImage(ae->layers.front().data(), ae->imageShape[0], ae->imageShape[1]);
-      Map<MatrixXd> reconstructedImage(ae->layers.back().data(), ae->imageShape[0], ae->imageShape[1]);
-
-      MatrixXd pixelMapInputImage         = inputImage;
-      MatrixXd pixelMapReconstructedImage = reconstructedImage.transpose();
-
-/*
-      cout << "Input:" << endl;
-      cout << pixelMapInputImage << endl;
-
-      cout << "Reconstruction:" << endl;
-      cout << pixelMapReconstructedImage << endl;
-
-      cout << "Num channels: " << someImage.channels() << endl;
-*/
-      eigen2cv(pixelMapReconstructedImage, someImage);
-
-/*
-      cout << "OpenCV Mat:" << endl;
-      cout << someImage << endl;
-*/
-      imshow("test", someImage);
-      waitKey(1);
-
-//      cout << "===================" << endl;
-    }
-
-    aveLoss = aveLoss / trainingData.size();
-    printf("Epoch %d, Loss: %f\n", i, aveLoss);
+  for(int j = 0; j < trainingData.size(); j++) {
+    ae->setInput(trainingData.at(j)); 
+    ae->feedForward();
+    ae->calculateLoss(labelsData.at(j));
+    
+    printf("%f\n", ae->loss);
   }
-
-  printf("Saving weights to %s...\n", argv[3]);
-  ae->saveWeights(argv[3]);
 
   printf("Done...\n");
 

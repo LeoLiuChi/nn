@@ -18,6 +18,7 @@ mlp-train
 mlp-classify
 ae-train
 ae-train-images
+ae-loss
 
 scripts/
 projects/
